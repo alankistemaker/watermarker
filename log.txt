@@ -1,0 +1,7 @@
+####################################################################
+
+Moved embed function into class method for AppImage
+This has caused a problem with the approach for blocksize in the 'embedTab_button_embedImageButtonPressed' callback.
+A possible solution could be adding a blocksize property into AppImage, however this is not good practice.
+
+####################################################################
