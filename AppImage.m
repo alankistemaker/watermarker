@@ -69,8 +69,8 @@ classdef AppImage
             lMatrix = obj.fImageMatrix;
         end
         
-        % embed aWatermarkImage into obj using aMethod
-        function lEmbeddedImage = embed(obj, aWatermarkImage, aMethod)
+        % DONT USE: embed aWatermarkImage into obj using aMethod
+        function lEmbeddedImage = embed(obj, aWatermarkImage, aMethod, aBlockSize)
             lMethod = string(aMethod);
             lHostImage = obj;
             lWatermarkImage = aWatermarkImage;
@@ -106,8 +106,25 @@ classdef AppImage
         
         % calls wmRefact and returns a new AppImage tiled to aBlockSize
         function lAppImage = tile(obj, aBlockSize)
-            lAppImage = wmRefact(obj.fImageMatrix, aBlockSize);
-            lAppImage = AppImage(lAppImage, obj.title);
+            % local variable init
+            lWatermark = obj.fImageMatrix;
+            lBlockSize = aBlockSize;
+            
+            lBlockSize_n = lBlockSize(1) / Size(lWatermark);    % side-length of the block
+            
+            % stack blocks sideways
+            lWatermark_concat = lWatermark;
+            
+            for i = 0 : (lBlockSize_n - 2)
+                lWatermark_concat = [lWatermark_concat lWatermark];
+            end
+            
+            lWatermark_concat_x = lWatermark_concat;
+            for i = 0 : (lBlockSize_n - 2)
+                lWatermark_concat = [lWatermark_concat ; lWatermark_concat_x];
+            end
+            %lAppImage = wmRefact(obj.fImageMatrix, aBlockSize);
+            lAppImage = AppImage(lWatermark_concat, obj.title);
         end
         
         % calls wmSanitation and returns a new sanitized AppImage
